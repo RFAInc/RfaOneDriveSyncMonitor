@@ -290,10 +290,6 @@ function Test-OdSyncService {
 
     Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
     $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
-    <#$scriptblock = {
-        import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
-        Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
-    }#>
     $scriptblock = {
         import-module $DllFilePath
         Get-ODStatus | convertto-json | out-file $jsonODLogging
@@ -304,7 +300,7 @@ function Test-OdSyncService {
         "-command $($scriptblock)",
         "C:\Windows\System32\WindowsPowershell\v1.0",
         $false
-    )
+    ) | Out-Null
     start-sleep 5
     
     $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
