@@ -279,7 +279,6 @@ function Test-OdSyncService {
             }
         }
 "@
-    Write-Output "Test282"
 
     $DllFilePath = 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
     $DllUri = 'https://raw.githubusercontent.com/rodneyviana/ODSyncService/master/Binaries/PowerShell/OneDriveLib.dll'
@@ -288,7 +287,6 @@ function Test-OdSyncService {
         Invoke-WebRequest -Uri $DllUri -OutFile $DllFilePath
         Unblock-File $DllFilePath
     }
-    Write-Output "Test291"
 
     Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
     $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
@@ -297,31 +295,26 @@ function Test-OdSyncService {
         Get-ODStatus | convertto-json | out-file $jsonODLogging
     }
     Write-Output "Test299"
-
     [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
         "C:\Windows\System32\WindowsPowershell\v1.0\Powershell.exe",
         "-command $($scriptblock)",
         "C:\Windows\System32\WindowsPowershell\v1.0",
         $false
     )
+    Write-Output "Test305"
     start-sleep 5
-    Write-Output "Test308"
     
     $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
-    Write-Output "Test311"
     $ODStatus = (get-content $jsonODLogging | convertfrom-json).value
-    Write-Output "Test313"
     
     foreach ($ODStat in $ODStatus) {
         if ($ODStat.StatusString -in $ErrorList) {
             $ODerrors = "$($ODStat.LocalPath) is in state $($ODStat.StatusString)"
         }
     }
-    Write-Output "Test320"
 
     if (!$ODerrors) {
         $ODerrors = "Healthy"
     }
-    Write-Output "Test325"
     Write-Output $ODerrors
 }#END function Test-OdSyncService
