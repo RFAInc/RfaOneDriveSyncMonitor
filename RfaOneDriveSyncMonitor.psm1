@@ -305,6 +305,7 @@ function Test-OdSyncService {
     
     $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
     $ODStatus = (get-content $jsonODLogging | convertfrom-json).value
+    Remove-Item $jsonODLogging -Force
     
     foreach ($ODStat in $ODStatus) {
         if ($ODStat.StatusString -in $ErrorList) {
