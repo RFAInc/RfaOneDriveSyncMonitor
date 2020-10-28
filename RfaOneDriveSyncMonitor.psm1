@@ -283,16 +283,20 @@ function Test-OdSyncService {
     $DllFilePath = 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
     $DllUri = 'https://raw.githubusercontent.com/rodneyviana/ODSyncService/master/Binaries/PowerShell/OneDriveLib.dll'
     if (Test-Path $DllFilePath) {} else {
-        New-Item (Split-Path $DllFilePath -Parent) -ItemType directory -Force -ErrorAction SilentlyContinue
+        New-Item (Split-Path $DllFilePath -Parent) -ItemType directory -Force -ErrorAction SilentlyContinue | Out-Null
         Invoke-WebRequest -Uri $DllUri -OutFile $DllFilePath
         Unblock-File $DllFilePath
     }
 
     Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
     $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
-    $scriptblock = {
+    <#$scriptblock = {
         import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
-        Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt' | Out-Null
+        Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
+    }#>
+    $scriptblock = {
+        import-module $DllFilePath
+        Get-ODStatus | convertto-json | out-file $jsonODLogging
     }
 
     [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
