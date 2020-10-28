@@ -295,7 +295,7 @@ function Test-OdSyncService {
         Get-ODStatus | convertto-json | out-file $jsonODLogging
     }
     Write-Output "Test299"
-    [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
+    $null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
         "C:\Windows\System32\WindowsPowershell\v1.0\Powershell.exe",
         "-command $($scriptblock)",
         "C:\Windows\System32\WindowsPowershell\v1.0",
