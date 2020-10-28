@@ -10,6 +10,7 @@ function Test-OdSyncService {
     From https://www.cyberdrain.com/monitoring-with-powershell-monitoring-onedrive-status-for-current-logged-on-user/
     Modified by Tony Pagliaro
     #>
+    [CmdletBinding()]
 
     $Source = @"
         using System;  
@@ -294,14 +295,12 @@ function Test-OdSyncService {
         import-module $DllFilePath
         Get-ODStatus | convertto-json | out-file $jsonODLogging
     }
-    Write-Output "Test299"
     $null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
         "C:\Windows\System32\WindowsPowershell\v1.0\Powershell.exe",
         "-command $($scriptblock)",
         "C:\Windows\System32\WindowsPowershell\v1.0",
         $false
     )
-    Write-Output "Test305"
     start-sleep 5
     
     $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
