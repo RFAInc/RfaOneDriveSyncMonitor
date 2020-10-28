@@ -291,8 +291,8 @@ function Test-OdSyncService {
     Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
     $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
     $scriptblock = {
-        import-module $DllFilePath
-        Get-ODStatus | convertto-json | out-file $jsonODLogging | Out-Null
+        import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
+        Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt' | Out-Null
     }
 
     [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
@@ -317,4 +317,4 @@ function Test-OdSyncService {
     }
 
     Write-Output $ODerrors
-}
+}#END function Test-OdSyncService
