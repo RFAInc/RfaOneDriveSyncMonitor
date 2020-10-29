@@ -304,8 +304,14 @@ function Test-OdSyncService {
     start-sleep 5
     
     $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
-    $ODStatus = (get-content $jsonODLogging | convertfrom-json).value
-    Remove-Item $jsonODLogging -Force
+    Try {
+        $ODStatus = (get-content $jsonODLogging -ea Stop | convertfrom-json).value
+    } Catch {
+        Write-Host "DEBUG: scriptblock: `n$($scriptblock)"
+        throw "Results were not recorded to log file."
+    } Finally {
+        Remove-Item $jsonODLogging -Force -ea 0
+    }
     
     foreach ($ODStat in $ODStatus) {
         if ($ODStat.StatusString -in $ErrorList) {
