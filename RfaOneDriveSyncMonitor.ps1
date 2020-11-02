@@ -285,7 +285,7 @@ if (Test-Path $DllFilePath) {} else {
     Invoke-WebRequest -Uri $DllUri -OutFile $DllFilePath
     Unblock-File $DllFilePath
 }
-Write-Verbose "line 288" -verbose
+
 
 Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
 $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
@@ -300,7 +300,7 @@ $null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUse
     $false
 )
 start-sleep 5
-Write-Verbose "line 303" -verbose; exit
+
 
 $ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
 Try {
@@ -310,14 +310,12 @@ Try {
     throw "Error reading exported status file. $($_.Exception.Message)"
 } Finally {
     Rename-Item $jsonODLogging -NewName "OneDriveLogging.$((Get-Date).ToString('yyyyMMddHHmmss')).txt" -Force -ea 0
-    Write-Verbose "line 311" -verbose
     Get-ChildItem 'C:\programdata\Microsoft OneDrive\OneDriveLogging.*.txt' -ea 0 |
-        Where-Object {$_.LastWriteTime -gt ((Get-Date).AddDays(-14))} |
+        Where-Object {$_.LastWriteTime -lt ((Get-Date).AddDays(-14))} |
         Remove-Item -Confirm:$false -Force
 }
 
 $ODerrors = New-Object System.Collections.ArrayList
-Write-Verbose "line 320" -verbose; exit
 foreach ($ODStat in $ODStatus) {
     if ($ODStat.StatusString -in $ErrorList) {
         $thisResult = "$($ODStat.LocalPath) is in state $($ODStat.StatusString)"
@@ -325,8 +323,10 @@ foreach ($ODStat in $ODStatus) {
     }
 }
 
+
 if ($ODerrors) {
-    Write-Output ($ODerrors -join ', ' | Out-String)
+    Write-Host ($ODerrors -join ', ' | Out-String)
+    # Write-Output gives errors for some reason, like it's running the string as a command
 } else {
-    Write-Output "Healthy"
+    Write-Host "Healthy"
 }
