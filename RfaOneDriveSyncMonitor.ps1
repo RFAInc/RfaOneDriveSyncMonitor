@@ -8,7 +8,7 @@ Modified by Tony Pagliaro
 Version 3 required for Unblock-File cmdlet. 
 
 #>
-
+Write-Verbose "line 11" -verbose
 $Source = @"
     using System;  
     using System.Runtime.InteropServices;
@@ -277,7 +277,7 @@ $Source = @"
         }
     }
 "@
-
+Write-Verbose "line 280" -verbose
 $DllFilePath = 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
 $DllUri = 'https://raw.githubusercontent.com/rodneyviana/ODSyncService/master/Binaries/PowerShell/OneDriveLib.dll'
 if (Test-Path $DllFilePath) {} else {
