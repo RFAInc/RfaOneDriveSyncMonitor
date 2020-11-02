@@ -290,7 +290,7 @@ Write-Verbose "line 288" -verbose
 Add-Type -ReferencedAssemblies 'System', 'System.Runtime.InteropServices' -TypeDefinition $Source -Language CSharp 
 $jsonODLogging = 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
 $scriptblock = {
-    import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'
+    import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'; 
     Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
 }
 $null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
@@ -311,7 +311,7 @@ Try {
 } Finally {
     Rename-Item $jsonODLogging -NewName "OneDriveLogging.$((Get-Date).ToString('yyyyMMddHHmmss')).txt" -Force -ea 0
     Write-Verbose "line 311" -verbose
-    Get-Item 'C:\programdata\Microsoft OneDrive\OneDriveLogging.*.txt' -ea 0 |
+    Get-ChildItem 'C:\programdata\Microsoft OneDrive\OneDriveLogging.*.txt' -ea 0 |
         Where-Object {$_.LastWriteTime -gt ((Get-Date).AddDays(-14))} |
         Remove-Item -Confirm:$false -Force
 }
