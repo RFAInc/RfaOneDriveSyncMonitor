@@ -321,7 +321,7 @@ foreach ($ODStat in $ODStatus) {
 }
 
 if ($ODerrors) {
-    $ODerrors -join ', '
+    Write-Output ($ODerrors -join ', ' | Out-String)
 } else {
-    "Healthy"
+    Write-Output "Healthy"
 }
