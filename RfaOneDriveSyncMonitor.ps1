@@ -293,12 +293,19 @@ $scriptblock = {
     import-module 'C:\programdata\Microsoft OneDrive\OneDriveLib.dll'; 
     Get-ODStatus | convertto-json | out-file 'C:\programdata\Microsoft OneDrive\OneDriveLogging.txt'
 }
-$null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
-    "C:\Windows\System32\WindowsPowershell\v1.0\Powershell.exe",
-    "-command $($scriptblock)",
-    "C:\Windows\System32\WindowsPowershell\v1.0",
-    $false
+Try {
+    $null = [murrayju.ProcessExtensions.ProcessExtensions]::StartProcessAsCurrentUser(
+        "C:\Windows\System32\WindowsPowershell\v1.0\Powershell.exe",
+        "-command $($scriptblock)",
+        "C:\Windows\System32\WindowsPowershell\v1.0",
+        $false
 )
+} Catch {
+    if ($_ -like '**') {
+        $whoami = Invoke-Expression 'whoami' | Out-String
+        Write-Error "Error starting process as user. You must be running this impersonation command as system. You are running it as $($whoami)."
+    }
+}
 start-sleep 5
 
 
