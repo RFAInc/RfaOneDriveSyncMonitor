@@ -316,10 +316,12 @@ Try {
     Write-Host "DEBUG: scriptblock: `n$($scriptblock)"
     throw "Error reading exported status file. $($_.Exception.Message)"
 } Finally {
-    Rename-Item $jsonODLogging -NewName "OneDriveLogging.$((Get-Date).ToString('yyyyMMddHHmmss')).txt" -Force -ea 0
+    $eLog=$null
+    Rename-Item $jsonODLogging -NewName "OneDriveLogging.$((Get-Date).ToString('yyyyMMddHHmmss')).txt" -Force -ea 0 -ev eLog
     Get-ChildItem 'C:\programdata\Microsoft OneDrive\OneDriveLogging.*.txt' -ea 0 |
         Where-Object {$_.LastWriteTime -lt ((Get-Date).AddDays(-14))} |
         Remove-Item -Confirm:$false -Force
+    if ($eLog) {$eLog | fl * | out-file 'C:\programdata\Microsoft OneDrive\RfaOdsmLogBackupErrors.txt' -Append}
 }
 
 $ODerrors = New-Object System.Collections.ArrayList
