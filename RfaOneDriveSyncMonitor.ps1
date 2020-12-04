@@ -309,7 +309,8 @@ Try {
 start-sleep 5
 
 
-$ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
+#$ErrorList = @("NotInstalled", "ReadOnly", "Error", "OndemandOrUnknown")
+$ErrorList = @("NotInstalled", "ReadOnly", "Error") # Removed 'OndemandOrUnknown' as error condition
 Try {
     $ODStatus = (get-content $jsonODLogging -ea Stop | convertfrom-json).value
 } Catch {
